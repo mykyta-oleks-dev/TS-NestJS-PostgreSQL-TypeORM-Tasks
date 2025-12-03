@@ -1,8 +1,10 @@
-import { AppConfig } from './app.config';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { AppConfig } from '../config/app.config';
 import Joi from 'joi';
 
 export default interface ConfigType {
 	app: AppConfig;
+	db: TypeOrmModuleOptions;
 }
 
 export const appConfigSchema = Joi.object({

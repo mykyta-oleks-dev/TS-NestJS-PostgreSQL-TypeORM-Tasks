@@ -11,7 +11,7 @@ import {
 	Patch,
 	Post,
 } from '@nestjs/common';
-import { FindOneParams } from '../shared/find-one.params';
+import { FindOneParams } from '../shared/validation/find-one.params';
 import { CreateTaskDto, UpdateTaskDto } from './tasks.dto';
 import { TasksService } from './tasks.service';
 import { WrongTaskStatusException } from './exceptions/wrong-task-status.exception';
