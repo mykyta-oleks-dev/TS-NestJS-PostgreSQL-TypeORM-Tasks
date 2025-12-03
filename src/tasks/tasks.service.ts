@@ -32,4 +32,9 @@ export class TasksService {
 			status,
 		};
 	}
+
+	delete(task: ITask) {
+		const idx = this.tasks.findIndex((t) => t.id === task.id);
+		this.tasks.splice(idx, 1);
+	}
 }
