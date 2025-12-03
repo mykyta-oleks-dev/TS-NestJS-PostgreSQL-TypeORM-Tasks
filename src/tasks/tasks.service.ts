@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
-import { ITask } from './task.model';
+import { ITask, TaskStatus } from './task.model';
 import { CreateTaskDto, UpdateTaskDto } from './tasks.dto';
+import { WrongTaskStatusException } from './exceptions/wrong-task-status.exception';
 
 @Injectable()
 export class TasksService {
@@ -27,9 +28,29 @@ export class TasksService {
 	}
 
 	update(task: ITask, body: UpdateTaskDto): ITask {
+		if (
+			body.status &&
+			!this._checkIsValidStatusChange(task.status, body.status)
+		) {
+			throw new WrongTaskStatusException();
+		}
+
 		Object.assign(task, body);
 
 		return task;
+	}
+
+	private _checkIsValidStatusChange(
+		current: TaskStatus,
+		updated: TaskStatus,
+	): boolean {
+		const statusOrder = [
+			TaskStatus.OPEN,
+			TaskStatus.IN_PROGRESS,
+			TaskStatus.DONE,
+		];
+
+		return statusOrder.indexOf(current) <= statusOrder.indexOf(updated);
 	}
 
 	delete(task: ITask) {
