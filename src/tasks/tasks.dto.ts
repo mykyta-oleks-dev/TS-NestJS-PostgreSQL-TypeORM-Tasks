@@ -1,5 +1,5 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { IsEnum, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 import { TaskStatus } from './tasks.entity';
 
 export class CreateTaskDto {
@@ -14,9 +14,15 @@ export class CreateTaskDto {
 	@IsNotEmpty()
 	@IsEnum(TaskStatus)
 	status: TaskStatus;
+
+	@IsNotEmpty()
+	@IsUUID()
+	userId: string;
 }
 
-export class UpdateTaskDto extends PartialType(CreateTaskDto) {}
+export class UpdateTaskDto extends PartialType(
+	OmitType(CreateTaskDto, ['userId'] as const),
+) {}
 
 export class UpdateStatusDto {
 	@IsNotEmpty()

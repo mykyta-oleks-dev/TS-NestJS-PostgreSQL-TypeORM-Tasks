@@ -22,6 +22,7 @@ export class TasksService {
 	}
 
 	async create(body: CreateTaskDto) {
+		console.log(body);
 		return await this.tasksRepository.save(body);
 	}
 

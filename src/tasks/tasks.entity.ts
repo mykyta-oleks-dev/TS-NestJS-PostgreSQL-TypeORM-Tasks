@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import User from '../users/users.entity';
 
 export enum TaskStatus {
 	OPEN = 'OPEN',
@@ -6,7 +7,7 @@ export enum TaskStatus {
 	DONE = 'DONE',
 }
 
-@Entity()
+@Entity('tasks')
 export default class Task {
 	@PrimaryGeneratedColumn('uuid')
 	id: string;
@@ -31,4 +32,10 @@ export default class Task {
 		nullable: false,
 	})
 	status: TaskStatus;
+
+	@Column()
+	userId: string;
+
+	@ManyToOne(() => User, (user) => user.tasks, { nullable: false })
+	user: User;
 }
