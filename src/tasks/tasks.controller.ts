@@ -12,7 +12,7 @@ import {
 	Post,
 } from '@nestjs/common';
 import { FindOneParams } from '../shared/validation/find-one.params';
-import { CreateTaskDto, UpdateTaskDto } from './tasks.dto';
+import { CreateTaskDto, UpdateTaskDto } from './data/dtos/tasks.dto';
 import { TasksService } from './tasks.service';
 import { WrongTaskStatusException } from './exceptions/wrong-task-status.exception';
 

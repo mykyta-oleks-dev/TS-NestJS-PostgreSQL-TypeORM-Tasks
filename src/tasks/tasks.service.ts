@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { WrongTaskStatusException } from './exceptions/wrong-task-status.exception';
-import Task from './tasks.entity';
-import { TaskStatus } from './tasks.entity';
-import { CreateTaskDto, UpdateTaskDto } from './tasks.dto';
+import Task, { TaskStatus } from './data/entities/tasks.entity';
+import { CreateTaskDto, UpdateTaskDto } from './data/dtos/tasks.dto';
 
 @Injectable()
 export class TasksService {

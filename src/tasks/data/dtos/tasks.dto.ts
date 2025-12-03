@@ -1,6 +1,6 @@
 import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { IsEnum, IsNotEmpty, IsString, IsUUID } from 'class-validator';
-import { TaskStatus } from './tasks.entity';
+import { TaskStatus } from '../entities/tasks.entity';
 
 export class CreateTaskDto {
 	@IsNotEmpty()

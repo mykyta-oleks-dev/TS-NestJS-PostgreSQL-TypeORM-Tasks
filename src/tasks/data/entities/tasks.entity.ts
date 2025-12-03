@@ -1,5 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import User from '../users/users.entity';
+import {
+	Column,
+	Entity,
+	ManyToOne,
+	OneToMany,
+	PrimaryGeneratedColumn,
+} from 'typeorm';
+import User from '../../../users/users.entity';
+import TaskLabel from './task-labels.entity';
 
 export enum TaskStatus {
 	OPEN = 'OPEN',
@@ -38,4 +45,7 @@ export default class Task {
 
 	@ManyToOne(() => User, (user) => user.tasks, { nullable: false })
 	user: User;
+
+	@OneToMany(() => TaskLabel, (label) => label.task)
+	labels: TaskLabel[];
 }

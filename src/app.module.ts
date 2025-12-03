@@ -10,8 +10,9 @@ import appConfig from './shared/config/app.config';
 import typeOrmConfig from './shared/config/db.config';
 import TypedConfigService from './shared/types/config-service.types';
 import { appConfigSchema } from './shared/types/config.types';
+import TaskLabel from './tasks/data/entities/task-labels.entity';
+import Task from './tasks/data/entities/tasks.entity';
 import { TasksModule } from './tasks/tasks.module';
-import Task from './tasks/tasks.entity';
 import User from './users/users.entity';
 
 @Module({
@@ -21,7 +22,7 @@ import User from './users/users.entity';
 			inject: [ConfigService],
 			useFactory: async (configService: TypedConfigService) => ({
 				...(await configService.get('db')),
-				entities: [Task, User],
+				entities: [Task, User, TaskLabel],
 			}),
 		}),
 		ConfigModule.forRoot({
