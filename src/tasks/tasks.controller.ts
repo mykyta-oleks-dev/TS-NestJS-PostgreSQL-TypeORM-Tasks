@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './create-task.dto';
+import { FindOneParams } from '../shared/find-one.params';
 
 @Controller('tasks')
 export class TasksController {
@@ -12,7 +13,7 @@ export class TasksController {
 	}
 
 	@Get(':id')
-	public findOne(@Param('id') id: string) {
+	public findOne(@Param() { id }: FindOneParams) {
 		return this.tasksService.findOne(id);
 	}
 
