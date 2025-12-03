@@ -1,18 +1,19 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DummyService } from './dummy/dummy.service';
-import { MessageFormatter } from './message-formatter/message-formatter';
-import { LoggerService } from './logger/logger.service';
-import { TasksModule } from './tasks/tasks.module';
 import appConfig from './config/app.config';
-import { ConfigModule } from '@nestjs/config';
 import { appConfigSchema } from './config/config.types';
+import typeOrmConfig from './config/db.config';
+import { DummyService } from './dummy/dummy.service';
+import { LoggerService } from './logger/logger.service';
+import { MessageFormatter } from './message-formatter/message-formatter';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
 	imports: [
 		ConfigModule.forRoot({
-			load: [appConfig],
+			load: [appConfig, typeOrmConfig],
 			validationSchema: appConfigSchema,
 			validationOptions: {
 				allowUnknown: true,
