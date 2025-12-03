@@ -11,6 +11,7 @@ import typeOrmConfig from './shared/config/db.config';
 import TypedConfigService from './shared/types/config-service.types';
 import { appConfigSchema } from './shared/types/config.types';
 import { TasksModule } from './tasks/tasks.module';
+import Task from './tasks/tasks.entity';
 
 @Module({
 	imports: [
@@ -19,6 +20,7 @@ import { TasksModule } from './tasks/tasks.module';
 			inject: [ConfigService],
 			useFactory: async (configService: TypedConfigService) => ({
 				...(await configService.get('db')),
+				entities: [Task],
 			}),
 		}),
 		ConfigModule.forRoot({
@@ -31,6 +33,7 @@ import { TasksModule } from './tasks/tasks.module';
 		}),
 		TasksModule,
 	],
+
 	controllers: [AppController],
 	providers: [
 		AppService,

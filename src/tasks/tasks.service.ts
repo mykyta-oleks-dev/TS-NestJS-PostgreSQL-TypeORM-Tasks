@@ -1,33 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'node:crypto';
-import { ITask, TaskStatus } from './task.model';
-import { CreateTaskDto, UpdateTaskDto } from './tasks.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { WrongTaskStatusException } from './exceptions/wrong-task-status.exception';
+import Task from './tasks.entity';
+import { TaskStatus } from './tasks.entity';
+import { CreateTaskDto, UpdateTaskDto } from './tasks.dto';
 
 @Injectable()
 export class TasksService {
-	private readonly tasks: ITask[] = [];
+	constructor(
+		@InjectRepository(Task)
+		private readonly tasksRepository: Repository<Task>,
+	) {}
 
-	findAll(): ITask[] {
-		return this.tasks;
+	async findAll() {
+		return await this.tasksRepository.find();
 	}
 
-	findOne(id: string) {
-		return this.tasks.find((t) => t.id === id);
+	async findOne(id: string) {
+		return await this.tasksRepository.findOneBy({ id });
 	}
 
-	create(body: CreateTaskDto): ITask {
-		const task: ITask = {
-			id: randomUUID(),
-			...body,
-		};
-
-		this.tasks.push(task);
-
-		return task;
+	async create(body: CreateTaskDto) {
+		return await this.tasksRepository.save(body);
 	}
 
-	update(task: ITask, body: UpdateTaskDto): ITask {
+	async update(task: Task, body: UpdateTaskDto) {
 		if (
 			body.status &&
 			!this._checkIsValidStatusChange(task.status, body.status)
@@ -37,7 +35,7 @@ export class TasksService {
 
 		Object.assign(task, body);
 
-		return task;
+		return await this.tasksRepository.save(task);
 	}
 
 	private _checkIsValidStatusChange(
@@ -53,8 +51,7 @@ export class TasksService {
 		return statusOrder.indexOf(current) <= statusOrder.indexOf(updated);
 	}
 
-	delete(task: ITask) {
-		const idx = this.tasks.findIndex((t) => t.id === task.id);
-		this.tasks.splice(idx, 1);
+	async delete(task: Task) {
+		await this.tasksRepository.delete(task);
 	}
 }

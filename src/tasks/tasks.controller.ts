@@ -21,25 +21,28 @@ export class TasksController {
 	constructor(private readonly tasksService: TasksService) {}
 
 	@Get()
-	public findAll() {
-		return this.tasksService.findAll();
+	public async findAll() {
+		return await this.tasksService.findAll();
 	}
 
 	@Get(':id')
-	public findOne(@Param() { id }: FindOneParams) {
-		return this._findOneOrFail(id);
+	public async findOne(@Param() { id }: FindOneParams) {
+		return await this._findOneOrFail(id);
 	}
 
 	@Post()
-	public create(@Body() body: CreateTaskDto) {
-		return this.tasksService.create(body);
+	public async create(@Body() body: CreateTaskDto) {
+		return await this.tasksService.create(body);
 	}
 
 	@Patch(':id')
-	public update(@Param() { id }: FindOneParams, @Body() body: UpdateTaskDto) {
-		const task = this._findOneOrFail(id);
+	public async update(
+		@Param() { id }: FindOneParams,
+		@Body() body: UpdateTaskDto,
+	) {
+		const task = await this._findOneOrFail(id);
 		try {
-			return this.tasksService.update(task, body);
+			return await this.tasksService.update(task, body);
 		} catch (err) {
 			if (err instanceof WrongTaskStatusException) {
 				throw new BadRequestException([err.message]);
@@ -49,13 +52,13 @@ export class TasksController {
 
 	@Delete(':id')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	public delete(@Param() { id }: FindOneParams) {
-		const task = this._findOneOrFail(id);
-		this.tasksService.delete(task);
+	public async delete(@Param() { id }: FindOneParams) {
+		const task = await this._findOneOrFail(id);
+		await this.tasksService.delete(task);
 	}
 
-	private _findOneOrFail(id: string) {
-		const task = this.tasksService.findOne(id);
+	private async _findOneOrFail(id: string) {
+		const task = await this.tasksService.findOne(id);
 
 		if (task) return task;
 
