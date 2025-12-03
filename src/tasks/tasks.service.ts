@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { ITask } from './task.model';
-import { CreateTaskDto } from './create-task.dto';
+import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
+import { CreateTaskDto } from './task.dto';
+import { ITask, TaskStatus } from './task.model';
 
 @Injectable()
 export class TasksService {
@@ -11,12 +11,8 @@ export class TasksService {
 		return this.tasks;
 	}
 
-	findOne(id: string): ITask {
-		const task = this.tasks.find((t) => t.id === id);
-
-		if (task) return task;
-
-		throw new NotFoundException();
+	findOne(id: string) {
+		return this.tasks.find((t) => t.id === id);
 	}
 
 	create(body: CreateTaskDto): ITask {
@@ -28,5 +24,12 @@ export class TasksService {
 		this.tasks.push(task);
 
 		return task;
+	}
+
+	updateStatus(task: ITask, status: TaskStatus): ITask {
+		return {
+			...task,
+			status,
+		};
 	}
 }
