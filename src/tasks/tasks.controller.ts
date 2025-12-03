@@ -11,7 +11,7 @@ import {
 	Post,
 } from '@nestjs/common';
 import { FindOneParams } from '../shared/find-one.params';
-import { CreateTaskDto, UpdateTaskDto } from './task.dto';
+import { CreateTaskDto, UpdateTaskDto } from './tasks.dto';
 import { TasksService } from './tasks.service';
 
 @Controller('tasks')
@@ -33,13 +33,10 @@ export class TasksController {
 		return this.tasksService.create(body);
 	}
 
-	@Patch(':id/status')
-	public updateStatus(
-		@Param() { id }: FindOneParams,
-		@Body() { status }: UpdateTaskDto,
-	) {
+	@Patch(':id')
+	public update(@Param() { id }: FindOneParams, @Body() body: UpdateTaskDto) {
 		const task = this._findOneOrFail(id);
-		return this.tasksService.updateStatus(task, status);
+		return this.tasksService.update(task, body);
 	}
 
 	@Delete(':id')

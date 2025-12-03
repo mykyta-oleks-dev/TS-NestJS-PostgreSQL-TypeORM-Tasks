@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
-import { CreateTaskDto } from './task.dto';
-import { ITask, TaskStatus } from './task.model';
+import { randomUUID } from 'node:crypto';
+import { ITask } from './task.model';
+import { CreateTaskDto, UpdateTaskDto } from './tasks.dto';
 
 @Injectable()
 export class TasksService {
@@ -26,11 +26,10 @@ export class TasksService {
 		return task;
 	}
 
-	updateStatus(task: ITask, status: TaskStatus): ITask {
-		return {
-			...task,
-			status,
-		};
+	update(task: ITask, body: UpdateTaskDto): ITask {
+		Object.assign(task, body);
+
+		return task;
 	}
 
 	delete(task: ITask) {
