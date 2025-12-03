@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { DummyService } from './dummy/dummy.service';
 import { MessageFormatter } from './message-formatter/message-formatter';
 import { LoggerService } from './logger/logger.service';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
-	imports: [],
+	imports: [TasksModule],
 	controllers: [AppController],
 	providers: [AppService, DummyService, MessageFormatter, LoggerService],
 })
