@@ -61,11 +61,18 @@ export class TasksService {
 	// TaskLabels
 
 	public async addLabels(task: Task, labelDtos: CreateTaskLabelDto[]) {
-		const labels = labelDtos.map((l) =>
-			this.taskLabelsRepository.create(l),
-		);
-		task.labels = [...task.labels, ...labels];
-		return await this.tasksRepository.save(task);
+		const existingNames = new Set(task.labels.map((l) => l.name));
+
+		const labels = this._getUniqueLabels(labelDtos)
+			.filter((l) => !existingNames.has(l.name))
+			.map((l) => this.taskLabelsRepository.create(l));
+
+		if (labels.length) {
+			task.labels = [...task.labels, ...labels];
+			return await this.tasksRepository.save(task);
+		}
+
+		return task;
 	}
 
 	// Helpers
