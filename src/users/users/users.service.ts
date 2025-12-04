@@ -20,10 +20,12 @@ export class UsersService {
 	public async createUser(body: CreateUserDto) {
 		const password = await this.passwordService.hash(body.password);
 
-		return await this.usersRepository.save({
+		const user = this.usersRepository.create({
 			...body,
 			password,
 		});
+
+		return await this.usersRepository.save(user);
 	}
 
 	public async findOne(id: string) {
