@@ -17,7 +17,10 @@ export class TasksService {
 	}
 
 	async findOne(id: string) {
-		return await this.tasksRepository.findOneBy({ id });
+		return await this.tasksRepository.findOne({
+			where: { id },
+			relations: ['labels'],
+		});
 	}
 
 	async create(body: CreateTaskDto) {

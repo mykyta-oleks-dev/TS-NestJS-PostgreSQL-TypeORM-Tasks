@@ -18,7 +18,7 @@ export default class TaskLabel {
 
 	@Column({
 		type: 'varchar',
-		length: 100,
+		length: 50,
 		nullable: false,
 	})
 	name: string;
@@ -30,6 +30,7 @@ export default class TaskLabel {
 	@ManyToOne(() => Task, (task) => task.labels, {
 		nullable: false,
 		onDelete: 'CASCADE',
+		orphanedRowAction: 'delete',
 	})
 	task: Task;
 
