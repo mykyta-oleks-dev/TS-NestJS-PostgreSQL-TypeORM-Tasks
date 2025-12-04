@@ -33,17 +33,13 @@ export class TestSetup {
 			.overrideProvider(ConfigService)
 			.useValue({
 				get: (key: string) => {
-					console.log({ key });
 					if (key.includes('db')) {
-						console.log(testConfig.db);
 						return testConfig.db;
 					}
 					if (key.includes('app')) {
-						console.log(testConfig.app);
 						return testConfig.app;
 					}
 					if (key.includes('auth')) {
-						console.log(testConfig.auth);
 						return testConfig.auth;
 					}
 					return null;
