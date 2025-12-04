@@ -1,9 +1,11 @@
 import {
 	Column,
+	CreateDateColumn,
 	Entity,
 	ManyToOne,
 	OneToMany,
 	PrimaryGeneratedColumn,
+	UpdateDateColumn,
 } from 'typeorm';
 import User from '../../../users/users.entity';
 import TaskLabel from './task-labels.entity';
@@ -42,6 +44,12 @@ export default class Task {
 
 	@Column()
 	userId: string;
+
+	@CreateDateColumn()
+	createdAt: Date;
+
+	@UpdateDateColumn()
+	updatedAt: Date;
 
 	@ManyToOne(() => User, (user) => user.tasks, { nullable: false })
 	user: User;
