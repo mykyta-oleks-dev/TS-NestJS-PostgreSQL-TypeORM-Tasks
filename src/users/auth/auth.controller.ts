@@ -9,6 +9,7 @@ import {
 import { CreateUserDto } from '../data/dtos/users.dto';
 import { AuthService } from './auth.service';
 import { LoginDto } from '../data/dtos/auth.dto';
+import { LoginResponse } from '../data/responses/auth';
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -26,6 +27,6 @@ export class AuthController {
 	public async login(@Body() body: LoginDto) {
 		const accessToken = await this.authService.login(body);
 
-		return { accessToken };
+		return new LoginResponse({ accessToken });
 	}
 }
