@@ -6,7 +6,8 @@ import Task, { TaskStatus } from './data/entities/tasks.entity';
 import { CreateTaskDto, UpdateTaskDto } from './data/dtos/tasks.dto';
 import { CreateTaskLabelDto } from './data/dtos/task-labels.dto';
 import TaskLabel from './data/entities/task-labels.entity';
-import { FindTasksParams } from './validation/params';
+import { FindTasksQuery } from './validation/params';
+import { PaginationParams } from '../shared/search/pagination.params';
 
 @Injectable()
 export class TasksService {
@@ -20,12 +21,17 @@ export class TasksService {
 
 	// Tasks
 
-	public async findAll(filters?: FindTasksParams) {
-		return await this.tasksRepository.find({
+	public async findAll(
+		filters: FindTasksQuery | undefined,
+		pagination: PaginationParams | undefined,
+	) {
+		return await this.tasksRepository.findAndCount({
 			where: {
 				status: filters?.status,
 			},
 			relations: ['labels'],
+			skip: pagination?.offset,
+			take: pagination?.limit,
 		});
 	}
 
