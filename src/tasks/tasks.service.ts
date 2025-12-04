@@ -75,6 +75,13 @@ export class TasksService {
 		return task;
 	}
 
+	public async removeLabels(task: Task, labelsToRemove: string[]) {
+		task.labels = task.labels.filter(
+			(l) => !labelsToRemove.includes(l.name),
+		);
+		return await this.tasksRepository.save(task);
+	}
+
 	// Helpers
 
 	private _checkIsValidStatusChange(
