@@ -8,6 +8,7 @@ import { CreateUserDto } from '../data/dtos/users.dto';
 import User from '../data/entities/users.entity';
 import { UsersService } from '../users/users.service';
 import { PasswordService } from '../password/password.service';
+import { LoginDto } from '../data/dtos/auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,7 @@ export class AuthService {
 		return user;
 	}
 
-	public async login(email: string, password: string) {
+	public async login({ email, password }: LoginDto) {
 		const user = await this.userService.findOneByEmail(email);
 
 		if (

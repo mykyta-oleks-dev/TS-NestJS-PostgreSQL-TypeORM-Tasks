@@ -5,11 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import type { StringValue } from 'ms';
 import { AuthConfig } from '../shared/config/auth.config';
 import TypedConfigService from '../shared/types/config-service.types';
-import { UsersController } from './users.controller';
+import { AuthController } from './auth/auth.controller';
+import { AuthService } from './auth/auth.service';
 import User from './data/entities/users.entity';
 import { PasswordService } from './password/password.service';
 import { UsersService } from './users/users.service';
-import { AuthService } from './auth/auth.service';
 
 @Module({
 	imports: [
@@ -26,7 +26,7 @@ import { AuthService } from './auth/auth.service';
 			}),
 		}),
 	],
-	controllers: [UsersController],
+	controllers: [AuthController],
 	providers: [UsersService, PasswordService, AuthService],
 })
 export class UsersModule {}
