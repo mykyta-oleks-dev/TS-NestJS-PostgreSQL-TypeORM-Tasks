@@ -7,8 +7,8 @@ import { AuthConfig } from '../shared/config/auth.config';
 import TypedConfigService from '../shared/types/config-service.types';
 import { UsersController } from './users.controller';
 import User from './data/entities/users.entity';
-import { UsersService } from './users.service';
 import { PasswordService } from './password/password.service';
+import { UsersService } from './users/users.service';
 
 @Module({
 	imports: [
