@@ -29,6 +29,13 @@ describe('AppController (e2e)', () => {
 			.expect(401);
 	});
 
+	it('should allow public access', async () => {
+		return request(testSetup.app.getHttpServer())
+			.post('/auth/register')
+			.send(testUser)
+			.expect(201);
+	});
+
 	it('/auth/register (POST)', () => {
 		return request(testSetup.app.getHttpServer())
 			.post('/auth/register')

@@ -10,7 +10,7 @@ import { AuthService } from './auth/auth.service';
 import User from './data/entities/users.entity';
 import { PasswordService } from './password/password.service';
 import { UsersService } from './users/users.service';
-import { AuthGuard } from './auth/guard';
+import { AuthGuard } from './auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 
 @Module({
