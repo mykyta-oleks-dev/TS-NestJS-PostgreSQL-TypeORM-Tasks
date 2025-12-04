@@ -27,7 +27,10 @@ export default class TaskLabel {
 	@Index()
 	taskId: string;
 
-	@ManyToOne(() => Task, (task) => task.labels, { nullable: false })
+	@ManyToOne(() => Task, (task) => task.labels, {
+		nullable: false,
+		onDelete: 'CASCADE',
+	})
 	task: Task;
 
 	@CreateDateColumn()
