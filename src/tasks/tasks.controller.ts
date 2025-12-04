@@ -10,20 +10,22 @@ import {
 	Param,
 	Patch,
 	Post,
+	Query,
 } from '@nestjs/common';
-import { FindOneParams } from '../shared/validation/find-one.params';
+import { FindOneParams } from '../shared/validation/params';
 import { CreateTaskDto, UpdateTaskDto } from './data/dtos/tasks.dto';
 import { TasksService } from './tasks.service';
 import { WrongTaskStatusException } from './exceptions/wrong-task-status.exception';
 import { CreateTaskLabelDto } from './data/dtos/task-labels.dto';
+import { FindTasksParams } from './validation/params';
 
 @Controller('tasks')
 export class TasksController {
 	constructor(private readonly tasksService: TasksService) {}
 
 	@Get()
-	public async findAll() {
-		return await this.tasksService.findAll();
+	public async findAll(@Query() filters?: FindTasksParams) {
+		return await this.tasksService.findAll(filters);
 	}
 
 	@Get(':id')
