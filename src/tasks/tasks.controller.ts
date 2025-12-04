@@ -3,6 +3,7 @@ import {
 	Body,
 	Controller,
 	Delete,
+	ForbiddenException,
 	Get,
 	HttpCode,
 	HttpStatus,
@@ -31,10 +32,12 @@ export class TasksController {
 	public async findAll(
 		@Query() pagination: PaginationParams,
 		@Query() filters: FindTasksQuery,
+		@CurrentUserId() userId: string,
 	) {
 		const [items, count] = await this.tasksService.findAll(
 			filters,
 			pagination,
+			userId,
 		);
 
 		const response: PaginationResponse<Task> = {
@@ -49,8 +52,14 @@ export class TasksController {
 	}
 
 	@Get(':id')
-	public async findOne(@Param() { id }: FindOneParams) {
-		return await this._findOneOrFail(id);
+	public async findOne(
+		@Param() { id }: FindOneParams,
+		@CurrentUserId() userId: string,
+	) {
+		const task = await this._findOneOrFail(id);
+		this._checkTaskOwnership(task, userId);
+
+		return task;
 	}
 
 	@Post()
@@ -65,8 +74,11 @@ export class TasksController {
 	public async update(
 		@Param() { id }: FindOneParams,
 		@Body() body: UpdateTaskDto,
+		@CurrentUserId() userId: string,
 	) {
 		const task = await this._findOneOrFail(id);
+		this._checkTaskOwnership(task, userId);
+
 		try {
 			return await this.tasksService.update(task, body);
 		} catch (err) {
@@ -78,8 +90,13 @@ export class TasksController {
 
 	@Delete(':id')
 	@HttpCode(HttpStatus.NO_CONTENT)
-	public async delete(@Param() { id }: FindOneParams) {
+	public async delete(
+		@Param() { id }: FindOneParams,
+		@CurrentUserId() userId: string,
+	) {
 		const task = await this._findOneOrFail(id);
+		this._checkTaskOwnership(task, userId);
+
 		await this.tasksService.delete(task);
 	}
 
@@ -110,5 +127,10 @@ export class TasksController {
 	) {
 		const task = await this._findOneOrFail(id);
 		await this.tasksService.removeLabels(task, labels);
+	}
+
+	private _checkTaskOwnership(task: Task, userId: string) {
+		if (task.userId !== userId)
+			throw new ForbiddenException('You can only access your own task');
 	}
 }

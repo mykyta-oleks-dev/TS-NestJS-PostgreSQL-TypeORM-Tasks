@@ -24,10 +24,13 @@ export class TasksService {
 	public async findAll(
 		filters: FindTasksQuery,
 		pagination: PaginationParams,
+		userId: string,
 	) {
 		const query = this.tasksRepository
 			.createQueryBuilder('task')
 			.leftJoinAndSelect('task.labels', 'labels');
+
+		query.andWhere('task.userId = :userId', { userId });
 
 		if (filters.status) {
 			query.andWhere('task.status = :status', { status: filters.status });

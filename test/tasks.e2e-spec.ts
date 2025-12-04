@@ -5,6 +5,7 @@ import { CreateTaskDto } from '../src/tasks/data/dtos/tasks.dto';
 import { JwtPayload } from '../src/users/types/jwt-payload.type';
 import { JwtService } from '@nestjs/jwt';
 import Task, { TaskStatus } from '../src/tasks/data/entities/tasks.entity';
+import { PaginationResponse } from '../src/shared/search/pagination.response';
 
 describe('Tasks (e2e)', () => {
 	let testSetup: TestSetup;
@@ -39,10 +40,10 @@ describe('Tasks (e2e)', () => {
 		return token;
 	};
 
-	const createTask = async (task: CreateTaskDto) => {
+	const createTask = async (task: CreateTaskDto, token: string) => {
 		const taskCreateResponse = await request(testSetup.app.getHttpServer())
 			.post('/tasks')
-			.set('Authorization', `Bearer ${accessToken}`)
+			.set('Authorization', `Bearer ${token}`)
 			.send(task);
 
 		const { id } = taskCreateResponse.body as Task;
@@ -64,12 +65,15 @@ describe('Tasks (e2e)', () => {
 
 		accessToken = token;
 
-		const id = await createTask({
-			title: 'Test task',
-			description: 'Test task description',
-			status: TaskStatus.OPEN,
-			labels: [{ name: 'test' }],
-		});
+		const id = await createTask(
+			{
+				title: 'Test task',
+				description: 'Test task description',
+				status: TaskStatus.OPEN,
+				labels: [{ name: 'test' }],
+			},
+			accessToken,
+		);
 
 		taskId = id;
 	}, 15000);
@@ -97,5 +101,38 @@ describe('Tasks (e2e)', () => {
 			.get(`/tasks/${taskId}`)
 			.set('Authorization', `Bearer ${token}`)
 			.expect(403);
+	});
+
+	it("should list only current user's tasks", async () => {
+		const otherUser = { ...testUser, email: 'other@example.com' };
+
+		await register(otherUser);
+
+		const otherUserToken = await logIn(otherUser);
+
+		const otherUserTask = {
+			title: 'Other user task',
+			description: 'Other user task description',
+			status: TaskStatus.OPEN,
+			labels: [{ name: 'other' }],
+		};
+
+		await createTask(otherUserTask, otherUserToken);
+
+		await request(testSetup.app.getHttpServer())
+			.get(`/tasks`)
+			.set('Authorization', `Bearer ${accessToken}`)
+			.expect(200)
+			.expect((res) => {
+				const body = res.body as PaginationResponse<Task>;
+
+				expect(body.data).not.toContainEqual(otherUserTask);
+
+				const { sub } = getJwtPayload(accessToken);
+
+				body.data.forEach((task) => {
+					expect(task).toHaveProperty('userId', sub);
+				});
+			});
 	});
 });
