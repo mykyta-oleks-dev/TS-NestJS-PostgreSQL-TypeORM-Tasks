@@ -23,6 +23,12 @@ describe('AppController (e2e)', () => {
 		name: 'Test user',
 	};
 
+	it('should require auth', async () => {
+		return await request(testSetup.app.getHttpServer())
+			.get('/tasks')
+			.expect(401);
+	});
+
 	it('/auth/register (POST)', () => {
 		return request(testSetup.app.getHttpServer())
 			.post('/auth/register')

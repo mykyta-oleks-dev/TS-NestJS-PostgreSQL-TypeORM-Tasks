@@ -7,16 +7,14 @@ import {
 	Post,
 	Request,
 	SerializeOptions,
-	UseGuards,
 	UseInterceptors,
 } from '@nestjs/common';
-import { CreateUserDto } from '../data/dtos/users.dto';
-import { AuthService } from './auth.service';
 import { LoginDto } from '../data/dtos/auth.dto';
+import { CreateUserDto } from '../data/dtos/users.dto';
 import { LoginResponse } from '../data/responses/auth';
-import type { AuthRequest } from './request';
 import { UsersService } from '../users/users.service';
-import { AuthGuard } from './guard';
+import { AuthService } from './auth.service';
+import type { AuthRequest } from './request';
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -41,7 +39,6 @@ export class AuthController {
 	}
 
 	@Get('profile')
-	@UseGuards(AuthGuard)
 	public async profile(@Request() req: AuthRequest) {
 		const user = await this.usersService.findOne(req.user.sub);
 

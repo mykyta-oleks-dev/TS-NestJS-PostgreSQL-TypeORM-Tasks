@@ -11,6 +11,7 @@ import User from './data/entities/users.entity';
 import { PasswordService } from './password/password.service';
 import { UsersService } from './users/users.service';
 import { AuthGuard } from './auth/guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
 	imports: [
@@ -28,6 +29,15 @@ import { AuthGuard } from './auth/guard';
 		}),
 	],
 	controllers: [AuthController],
-	providers: [UsersService, PasswordService, AuthService, AuthGuard],
+	providers: [
+		UsersService,
+		PasswordService,
+		AuthService,
+		AuthGuard,
+		{
+			provide: APP_GUARD,
+			useClass: AuthGuard,
+		},
+	],
 })
 export class UsersModule {}
