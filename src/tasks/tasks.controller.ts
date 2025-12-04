@@ -15,6 +15,7 @@ import { FindOneParams } from '../shared/validation/find-one.params';
 import { CreateTaskDto, UpdateTaskDto } from './data/dtos/tasks.dto';
 import { TasksService } from './tasks.service';
 import { WrongTaskStatusException } from './exceptions/wrong-task-status.exception';
+import { CreateTaskLabelDto } from './data/dtos/task-labels.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -63,5 +64,16 @@ export class TasksController {
 		if (task) return task;
 
 		throw new NotFoundException();
+	}
+
+	// TaskLabels
+
+	@Post(':id/labels')
+	public async addLabels(
+		@Param() { id }: FindOneParams,
+		@Body() labels: CreateTaskLabelDto[],
+	) {
+		const task = await this._findOneOrFail(id);
+		return await this.tasksService.addLabels(task, labels);
 	}
 }
