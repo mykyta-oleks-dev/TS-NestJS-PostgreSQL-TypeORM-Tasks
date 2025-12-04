@@ -9,6 +9,7 @@ import { UsersController } from './users.controller';
 import User from './data/entities/users.entity';
 import { PasswordService } from './password/password.service';
 import { UsersService } from './users/users.service';
+import { AuthService } from './auth/auth.service';
 
 @Module({
 	imports: [
@@ -26,6 +27,6 @@ import { UsersService } from './users/users.service';
 		}),
 	],
 	controllers: [UsersController],
-	providers: [UsersService, PasswordService],
+	providers: [UsersService, PasswordService, AuthService],
 })
 export class UsersModule {}
