@@ -1,10 +1,10 @@
 export const testConfig = {
-	database: {
+	db: {
 		type: 'postgres',
 		host: 'localhost',
 		port: '5432',
 		username: 'postgres',
-		password: 'postgres',
+		password: 'password',
 		database: 'tasks_e2e',
 		synchronize: true,
 	},

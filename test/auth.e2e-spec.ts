@@ -17,10 +17,25 @@ describe('AppController (e2e)', () => {
 		await testSetup?.teardown();
 	});
 
-	it('/ (GET)', () => {
+	const testUser = {
+		email: 'test@example.com',
+		password: 'Password123!',
+		name: 'Test user',
+	};
+
+	it('/auth/register (POST)', () => {
 		return request(testSetup.app.getHttpServer())
-			.get('/')
-			.expect(200)
-			.expect((res) => expect(res.text).toContain('Hello World!'));
+			.post('/auth/register')
+			.send(testUser)
+			.expect(201)
+			.expect((res) => {
+				const body = res.body as {
+					email?: string;
+					name?: string;
+				};
+				expect(body.email).toBe(testUser.email);
+				expect(body.name).toBe(testUser.name);
+				expect(body).not.toHaveProperty('password');
+			});
 	});
 });
