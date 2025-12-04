@@ -1,15 +1,14 @@
 import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { Type } from 'class-transformer';
 import {
 	IsEnum,
 	IsNotEmpty,
 	IsOptional,
 	IsString,
-	IsUUID,
 	ValidateNested,
 } from 'class-validator';
 import { TaskStatus } from '../entities/tasks.entity';
 import { CreateTaskLabelDto } from './task-labels.dto';
-import { Type } from 'class-transformer';
 
 export class CreateTaskDto {
 	@IsNotEmpty()
@@ -24,9 +23,7 @@ export class CreateTaskDto {
 	@IsEnum(TaskStatus)
 	status: TaskStatus;
 
-	@IsNotEmpty()
-	@IsUUID()
-	userId: string;
+	userId?: string;
 
 	@IsOptional()
 	@ValidateNested({ each: true })

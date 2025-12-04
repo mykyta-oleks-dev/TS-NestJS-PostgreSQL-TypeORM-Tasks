@@ -12,15 +12,16 @@ import {
 	Post,
 	Query,
 } from '@nestjs/common';
-import { FindOneParams } from '../shared/validation/params';
-import { CreateTaskDto, UpdateTaskDto } from './data/dtos/tasks.dto';
-import { TasksService } from './tasks.service';
-import { WrongTaskStatusException } from './exceptions/wrong-task-status.exception';
-import { CreateTaskLabelDto } from './data/dtos/task-labels.dto';
-import { FindTasksQuery } from './validation/params';
 import { PaginationParams } from '../shared/search/pagination.params';
 import type { PaginationResponse } from '../shared/search/pagination.response';
+import { FindOneParams } from '../shared/validation/params';
+import { CurrentUserId } from '../users/decorators/current-user-id.decorator';
+import { CreateTaskLabelDto } from './data/dtos/task-labels.dto';
+import { CreateTaskDto, UpdateTaskDto } from './data/dtos/tasks.dto';
 import Task from './data/entities/tasks.entity';
+import { WrongTaskStatusException } from './exceptions/wrong-task-status.exception';
+import { TasksService } from './tasks.service';
+import { FindTasksQuery } from './validation/params';
 
 @Controller('tasks')
 export class TasksController {
@@ -53,8 +54,11 @@ export class TasksController {
 	}
 
 	@Post()
-	public async create(@Body() body: CreateTaskDto) {
-		return await this.tasksService.create(body);
+	public async create(
+		@Body() body: CreateTaskDto,
+		@CurrentUserId() id: string,
+	) {
+		return await this.tasksService.create(body, id);
 	}
 
 	@Patch(':id')

@@ -67,10 +67,13 @@ export class TasksService {
 		});
 	}
 
-	public async create(body: CreateTaskDto) {
+	public async create(body: CreateTaskDto, userId: string) {
 		if (body.labels) {
 			body.labels = this._getUniqueLabels(body.labels);
 		}
+
+		body.userId = userId;
+
 		return await this.tasksRepository.save(body);
 	}
 
