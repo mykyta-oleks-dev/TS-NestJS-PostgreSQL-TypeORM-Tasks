@@ -8,6 +8,7 @@ import TypedConfigService from '../shared/types/config-service.types';
 import { UsersController } from './users.controller';
 import User from './data/entities/users.entity';
 import { UsersService } from './users.service';
+import { PasswordService } from './password/password.service';
 
 @Module({
 	imports: [
@@ -25,6 +26,6 @@ import { UsersService } from './users.service';
 		}),
 	],
 	controllers: [UsersController],
-	providers: [UsersService],
+	providers: [UsersService, PasswordService],
 })
 export class UsersModule {}
