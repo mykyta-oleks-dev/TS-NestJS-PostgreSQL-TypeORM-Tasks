@@ -14,7 +14,7 @@ describe('Users.DTO', () => {
 
 			dto.email = 'test@test.com';
 			dto.name = 'Name Surname';
-			dto.password = '123456';
+			dto.password = '123456A#';
 		});
 
 		it('should validate complete data', async () => {
@@ -58,5 +58,32 @@ describe('Users.DTO', () => {
 			expect(error.property).toBe('name');
 			expect(error.constraints).toHaveProperty('isNotEmpty');
 		});
+
+		it.each([
+			{ password: '123456!', condition: 'uppercase letter' },
+			{ password: 'ABCDEF!', condition: 'number' },
+			{ password: '123456A', condition: 'special character' },
+		])(
+			"should fail if password doesn't contain a: $condition",
+			async ({ password, condition }) => {
+				dto.password = password;
+
+				const errors = await validate(dto);
+
+				const passwordError = errors.find(
+					(e) => e.property === 'password',
+				);
+
+				expect(passwordError).toBeDefined();
+
+				const messages = Object.values(
+					passwordError?.constraints ?? {},
+				);
+
+				expect(messages).toContain(
+					`password must contain at least 1 ${condition}`,
+				);
+			},
+		);
 	});
 });
