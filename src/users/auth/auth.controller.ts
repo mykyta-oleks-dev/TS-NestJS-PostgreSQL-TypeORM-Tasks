@@ -11,11 +11,13 @@ import {
 } from '@nestjs/common';
 import { LoginDto } from '../data/dtos/auth.dto';
 import { CreateUserDto } from '../data/dtos/users.dto';
-import { LoginResponse } from '../data/responses/auth';
+import { AdminResponse, LoginResponse } from '../data/responses/auth.responses';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import type { AuthRequest } from './auth.requests';
 import { Public } from '../decorators/public.decorator';
+import { Role } from '../types/roles.enum';
+import { Roles } from '../decorators/roles.decorator';
 
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -50,5 +52,11 @@ export class AuthController {
 		}
 
 		return user;
+	}
+
+	@Get('admin')
+	@Roles(Role.ADMIN)
+	public adminOnly() {
+		return new AdminResponse({ message: 'Hello World!' });
 	}
 }

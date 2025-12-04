@@ -10,8 +10,9 @@ import { AuthService } from './auth/auth.service';
 import User from './data/entities/users.entity';
 import { PasswordService } from './password/password.service';
 import { UsersService } from './users/users.service';
-import { AuthGuard } from './auth/auth.guard';
+import { AuthGuard } from './guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './guards/roles.guard';
 
 @Module({
 	imports: [
@@ -34,9 +35,14 @@ import { APP_GUARD } from '@nestjs/core';
 		PasswordService,
 		AuthService,
 		AuthGuard,
+		RolesGuard,
 		{
 			provide: APP_GUARD,
 			useClass: AuthGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RolesGuard,
 		},
 	],
 })

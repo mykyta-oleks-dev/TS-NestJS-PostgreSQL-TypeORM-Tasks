@@ -8,3 +8,12 @@ export class LoginResponse {
 	@Expose()
 	accessToken: string;
 }
+
+export class AdminResponse {
+	constructor(private readonly partial?: Partial<AdminResponse>) {
+		Object.assign(this, partial);
+	}
+
+	@Expose()
+	message: string;
+}

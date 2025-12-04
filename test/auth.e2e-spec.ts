@@ -1,8 +1,15 @@
 import request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { TestSetup } from './utils/setup';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import User from '../src/users/data/entities/users.entity';
+import { Repository } from 'typeorm';
+import { Role } from '../src/users/types/roles.enum';
+import { PasswordService } from '../src/users/password/password.service';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from '../src/users/types/jwt-payload.type';
 
-describe('AppController (e2e)', () => {
+describe('Authentication & Authorization (e2e)', () => {
 	let testSetup: TestSetup;
 
 	beforeEach(async () => {
@@ -34,6 +41,33 @@ describe('AppController (e2e)', () => {
 			.post('/auth/register')
 			.send(testUser)
 			.expect(201);
+	});
+
+	it('should include roles into JWT', async () => {
+		const userRepo = testSetup.app.get<Repository<User>>(
+			getRepositoryToken(User),
+		);
+
+		await userRepo.save({
+			...testUser,
+			roles: [Role.ADMIN],
+			password: await testSetup.app
+				.get(PasswordService)
+				.hash(testUser.password),
+		});
+
+		const response = await request(testSetup.app.getHttpServer())
+			.post('/auth/login')
+			.send({ email: testUser.email, password: testUser.password });
+
+		const decoded = testSetup.app
+			.get(JwtService)
+			.decode<JwtPayload>(
+				(response.body as { accessToken: string }).accessToken,
+			);
+
+		expect(decoded).toHaveProperty('roles');
+		expect(decoded.roles).toContain(Role.ADMIN);
 	});
 
 	it('/auth/register (POST)', () => {
@@ -106,5 +140,51 @@ describe('AppController (e2e)', () => {
 		return await request(testSetup.app.getHttpServer())
 			.get('/auth/profile')
 			.expect(401);
+	});
+
+	it('/auth/admin', async () => {
+		const userRepo = testSetup.app.get<Repository<User>>(
+			getRepositoryToken(User),
+		);
+
+		await userRepo.save({
+			...testUser,
+			roles: [Role.ADMIN],
+			password: await testSetup.app
+				.get(PasswordService)
+				.hash(testUser.password),
+		});
+
+		const response = await request(testSetup.app.getHttpServer())
+			.post('/auth/login')
+			.send({ email: testUser.email, password: testUser.password });
+
+		const { accessToken } = response.body as { accessToken: string };
+
+		return await request(testSetup.app.getHttpServer())
+			.get('/auth/admin')
+			.set('Authorization', `Bearer ${accessToken}`)
+			.expect(200)
+			.expect((res) => {
+				const { message } = res.body as { message: string };
+				expect(message).toBe('Hello World!');
+			});
+	});
+
+	it('/auth/admin - forbidden to access by regular users', async () => {
+		await request(testSetup.app.getHttpServer())
+			.post('/auth/register')
+			.send(testUser);
+
+		const response = await request(testSetup.app.getHttpServer())
+			.post('/auth/login')
+			.send({ email: testUser.email, password: testUser.password });
+
+		const { accessToken } = response.body as { accessToken: string };
+
+		return await request(testSetup.app.getHttpServer())
+			.get('/auth/admin')
+			.set('Authorization', `Bearer ${accessToken}`)
+			.expect(403);
 	});
 });

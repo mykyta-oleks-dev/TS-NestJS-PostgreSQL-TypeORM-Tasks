@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import Task from '../../../tasks/data/entities/tasks.entity';
 import { Expose } from 'class-transformer';
+import { Role } from '../../types/roles.enum';
 
 @Entity('users')
 export default class User {
@@ -45,4 +46,8 @@ export default class User {
 	@OneToMany(() => Task, (task) => task.user)
 	@Expose()
 	tasks: Task[];
+
+	@Column('text', { array: true, default: [Role.USER] })
+	@Expose()
+	roles: Role[];
 }

@@ -10,6 +10,7 @@ import { Request } from 'express';
 import { AuthConfig } from '../../shared/config/auth.config';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+import { JwtPayload } from '../types/jwt-payload.type';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -35,14 +36,17 @@ export class AuthGuard implements CanActivate {
 			throw new UnauthorizedException();
 		}
 		try {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			const payload = await this.jwtService.verifyAsync(token, {
-				secret: this.configService.get<AuthConfig>('auth')?.jwt.secret,
-			});
+			const payload = await this.jwtService.verifyAsync<JwtPayload>(
+				token,
+				{
+					secret: this.configService.get<AuthConfig>('auth')?.jwt
+						.secret,
+				},
+			);
 
 			// 💡 We're assigning the payload to the request object here
 			// so that we can access it in our route handlers
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			request['user'] = payload;
 		} catch {
 			throw new UnauthorizedException();
