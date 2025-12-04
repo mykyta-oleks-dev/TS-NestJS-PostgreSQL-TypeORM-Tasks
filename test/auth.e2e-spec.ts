@@ -187,4 +187,16 @@ describe('Authentication & Authorization (e2e)', () => {
 			.set('Authorization', `Bearer ${accessToken}`)
 			.expect(403);
 	});
+
+	it('/auth/admin', async () => {
+		await request(testSetup.app.getHttpServer())
+			.post('/auth/register')
+			.send({ ...testUser, roles: [Role.ADMIN] })
+			.expect(201)
+			.expect((res) => {
+				const user = res.body as User;
+
+				expect(user.roles).toEqual([Role.USER]);
+			});
+	});
 });

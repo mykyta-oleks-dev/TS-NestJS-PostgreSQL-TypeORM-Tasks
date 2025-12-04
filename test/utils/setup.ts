@@ -1,6 +1,6 @@
 // #region Imports - Dependencies needed for testing
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { testConfig } from '../config/test.config';
@@ -51,6 +51,14 @@ export class TestSetup {
 		this.app = moduleFixture.createNestApplication();
 		// Get database connection
 		this.dataSource = moduleFixture.get(DataSource);
+
+		this.app.useGlobalPipes(
+			new ValidationPipe({
+				transform: true,
+				whitelist: true,
+			}),
+		);
+
 		// Initialize app (starts servers, connects to db etc.)
 		await this.app.init();
 	}
