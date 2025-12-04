@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { WrongTaskStatusException } from './exceptions/wrong-task-status.exception';
-import Task, { TaskStatus } from './data/entities/tasks.entity';
-import { CreateTaskDto, UpdateTaskDto } from './data/dtos/tasks.dto';
-import { CreateTaskLabelDto } from './data/dtos/task-labels.dto';
-import TaskLabel from './data/entities/task-labels.entity';
-import { FindTasksQuery } from './validation/params';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { PaginationParams } from '../shared/search/pagination.params';
+import { CreateTaskLabelDto } from './data/dtos/task-labels.dto';
+import { CreateTaskDto, UpdateTaskDto } from './data/dtos/tasks.dto';
+import TaskLabel from './data/entities/task-labels.entity';
+import Task, { TaskStatus } from './data/entities/tasks.entity';
+import { WrongTaskStatusException } from './exceptions/wrong-task-status.exception';
+import { FindTasksQuery } from './validation/params';
 
 @Injectable()
 export class TasksService {
@@ -25,10 +25,19 @@ export class TasksService {
 		filters: FindTasksQuery | undefined,
 		pagination: PaginationParams | undefined,
 	) {
+		const where: FindOptionsWhere<Task> = {};
+
+		if (filters?.status) {
+			where.status = filters.status;
+		}
+
+		if (filters?.search?.trim()) {
+			where.title = ILike(`%${filters.search.trim()}%`);
+			where.description = ILike(`%${filters.search.trim()}%`);
+		}
+
 		return await this.tasksRepository.findAndCount({
-			where: {
-				status: filters?.status,
-			},
+			where,
 			relations: ['labels'],
 			skip: pagination?.offset,
 			take: pagination?.limit,

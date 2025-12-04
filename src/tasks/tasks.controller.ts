@@ -37,11 +37,11 @@ export class TasksController {
 		);
 
 		const response: PaginationResponse<Task> = {
-			data: items,
 			meta: {
 				...pagination,
 				total: count,
 			},
+			data: items,
 		};
 
 		return response;
