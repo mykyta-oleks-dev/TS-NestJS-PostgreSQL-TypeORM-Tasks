@@ -27,6 +27,9 @@ export default class User {
 	})
 	email: string;
 
+	@Column()
+	password: string;
+
 	@CreateDateColumn()
 	createdAt: Date;
 
