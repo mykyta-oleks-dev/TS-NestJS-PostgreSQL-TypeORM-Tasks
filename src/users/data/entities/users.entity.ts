@@ -6,7 +6,7 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
-import Task from '../tasks/data/entities/tasks.entity';
+import Task from '../../../tasks/data/entities/tasks.entity';
 
 @Entity('users')
 export default class User {

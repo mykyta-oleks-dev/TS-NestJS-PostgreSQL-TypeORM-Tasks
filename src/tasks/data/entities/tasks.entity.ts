@@ -7,7 +7,7 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm';
-import User from '../../../users/users.entity';
+import User from '../../../users/data/entities/users.entity';
 import TaskLabel from './task-labels.entity';
 
 export enum TaskStatus {

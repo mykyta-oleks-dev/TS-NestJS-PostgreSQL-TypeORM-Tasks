@@ -13,7 +13,9 @@ import { appConfigSchema } from './shared/types/config.types';
 import TaskLabel from './tasks/data/entities/task-labels.entity';
 import Task from './tasks/data/entities/tasks.entity';
 import { TasksModule } from './tasks/tasks.module';
-import User from './users/users.entity';
+import User from './users/data/entities/users.entity';
+import authConfig from './shared/config/auth.config';
+import { UsersModule } from './users/users.module';
 
 @Module({
 	imports: [
@@ -26,7 +28,7 @@ import User from './users/users.entity';
 			}),
 		}),
 		ConfigModule.forRoot({
-			load: [appConfig, typeOrmConfig],
+			load: [appConfig, typeOrmConfig, authConfig],
 			validationSchema: appConfigSchema,
 			validationOptions: {
 				allowUnknown: true,
@@ -34,6 +36,7 @@ import User from './users/users.entity';
 			},
 		}),
 		TasksModule,
+		UsersModule,
 	],
 
 	controllers: [AppController],
