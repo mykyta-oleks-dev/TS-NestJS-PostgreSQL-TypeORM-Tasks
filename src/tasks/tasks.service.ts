@@ -55,7 +55,7 @@ export class TasksService {
 	}
 
 	public async delete(task: Task) {
-		await this.tasksRepository.delete(task);
+		await this.tasksRepository.delete(task.id);
 	}
 
 	// TaskLabels
