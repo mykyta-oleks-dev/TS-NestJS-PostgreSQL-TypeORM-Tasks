@@ -51,7 +51,6 @@ describe('Tasks (e2e)', () => {
 		return id;
 	};
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const getJwtPayload = (token: string) => {
 		return testSetup.app.get(JwtService).decode<JwtPayload>(token);
 	};
