@@ -32,4 +32,4 @@ jobs:
               run: docker build -t nestjs_api:dev .
 
             - name: Deploy with Docker Compose
-              run: docker-compose -f docker-compose.${{ inputs.docker_compose_file }}.yml up -d
+              run: docker compose -f ${{ inputs.docker_compose_file }} up -d
