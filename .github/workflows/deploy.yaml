@@ -1,0 +1,35 @@
+name: Deploy
+
+on:
+    workflow_call:
+        inputs:
+            environment:
+                required: true
+                type: string
+            docker_compose_file:
+                required: true
+                type: string
+
+jobs:
+    deploy:
+        runs-on: [self-hosted, '${{ inputs.environment }}']
+        environment: ${{ inputs.environment }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up Environment File
+              run: |
+                  echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
+                  echo "DB_PORT=${{ vars.DB_PORT }}" >> .env
+                  echo "DB_USERNAME=${{ vars.DB_USERNAME }}" >> .env
+                  echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+                  echo "DB_DATABASE=${{ vars.DB_DATABASE }}" >> .env
+                  echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+
+            - name: Build an image
+              run: docker build -t nestjs_api:dev .
+
+            - name: Deploy with Docker Compose
+              run: docker-compose -f docker-compose.${{ inputs.docker_compose_file }}.yml up -d

@@ -4,9 +4,6 @@ services:
     migration:
         image: nestjs_api:dev
         container_name: db_migration
-        environment:
-            DB_HOST: postgres
-            DB_SYNC: 0
         env_file: .env
         command: npm run migration:run
         restart: 'no'
@@ -17,9 +14,6 @@ services:
     api:
         image: nestjs_api:dev
         container_name: nestjs_api
-        environment:
-            DB_HOST: postgres
-            DB_SYNC: 0
         env_file: .env
         ports:
             - '3000:3000'
