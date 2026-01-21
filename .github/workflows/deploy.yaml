@@ -29,7 +29,7 @@ jobs:
                   echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
 
             - name: Build an image
-              run: docker build -t nestjs_api:dev .
+              run: docker build -t nestjs_api:${{ inputs.environment }} .
 
             - name: Run DB migrations (prod only)
               if: ${{ inputs.environment == 'prod' }}
