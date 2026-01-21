@@ -15,16 +15,16 @@ jobs:
         runs-on: ubuntu-latest
 
         services:
-            postgres:
+            postgres-test:
                 image: postgres:17
                 env:
-                    POSTGRES_USER: test
-                    POSTGRES_PASSWORD: test
-                    POSTGRES_DB: test
+                    POSTGRES_USER: tasks_e2e
+                    POSTGRES_PASSWORD: password
+                    POSTGRES_DB: tasks_e2e
                 ports:
                     - 5432:5432
                 options: >-
-                    --health-cmd="pg_isready -U test -d test"
+                    --health-cmd="pg_isready -U tasks_e2e -d tasks_e2e"
                     --health-interval=10s
                     --health-timeout=5s
                     --health-retries=5
@@ -51,9 +51,9 @@ jobs:
               run: |
                   echo "DB_HOST=localhost" >> .env
                   echo "DB_PORT=5432" >> .env
-                  echo "DB_USERNAME=test" >> .env
-                  echo "DB_PASSWORD=test" >> .env
-                  echo "DB_DATABASE=test" >> .env
+                  echo "DB_USERNAME=tasks_e2e" >> .env
+                  echo "DB_PASSWORD=password" >> .env
+                  echo "DB_DATABASE=tasks_e2e" >> .env
                   echo "JWT_SECRET=test-secret" >> .env
 
             - name: Install dependencies
