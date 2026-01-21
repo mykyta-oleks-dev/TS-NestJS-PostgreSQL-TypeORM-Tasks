@@ -5,6 +5,10 @@ export class InitialMigration1764919358599 implements MigrationInterface {
 
 	public async up(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.query(
+			`CREATE TYPE "public"."tasks_status_enum" AS ENUM('OPEN', 'IN_PROGRESS', 'DONE')`,
+		);
+
+		await queryRunner.query(
 			`CREATE TABLE "task_labels" ("id" SERIAL NOT NULL, "name" character varying(50) NOT NULL, "taskId" uuid NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_d63f0a11a5abfc0883efb374802" UNIQUE ("name", "taskId"), CONSTRAINT "PK_72402f2c22ceabc2e73b718c321" PRIMARY KEY ("id"))`,
 		);
 		await queryRunner.query(
@@ -37,5 +41,7 @@ export class InitialMigration1764919358599 implements MigrationInterface {
 			`DROP INDEX "public"."IDX_b148c8d5eb7df0b134cab11ad2"`,
 		);
 		await queryRunner.query(`DROP TABLE "task_labels"`);
+
+		await queryRunner.query(`DROP TYPE "public"."tasks_status_enum"`);
 	}
 }
