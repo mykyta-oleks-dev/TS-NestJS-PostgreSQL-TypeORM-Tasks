@@ -1,0 +1,10 @@
+name: tasks_prod
+
+services:
+    api:
+        image: nestjs_api:prod
+        container_name: nestjs_api
+        env_file: .env
+        ports:
+            - '3000:3000'
+        restart: unless-stopped

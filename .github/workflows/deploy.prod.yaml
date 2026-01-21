@@ -1,0 +1,12 @@
+name: Production Deploy (Manual)
+
+on:
+    workflow_dispatch:
+
+jobs:
+    trigger-deploy:
+        uses: ./.github/workflows/deploy.yml
+        with:
+            environment: 'prod'
+            docker_compose_file: 'docker-compose.prod.yml'
+        secrets: inherit

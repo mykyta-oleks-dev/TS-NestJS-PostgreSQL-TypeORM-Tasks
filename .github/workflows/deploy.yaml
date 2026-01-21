@@ -31,5 +31,13 @@ jobs:
             - name: Build an image
               run: docker build -t nestjs_api:dev .
 
+            - name: Run DB migrations (prod only)
+              if: ${{ inputs.environment == 'prod' }}
+              run: |
+                  docker run --rm \
+                    --env-file .env \
+                    nestjs_api:prod \
+                    npm run migration:run
+
             - name: Deploy with Docker Compose
               run: docker compose -f ${{ inputs.docker_compose_file }} up -d
